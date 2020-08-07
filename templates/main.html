@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" type="text/css" href="../static/css/oalecd9.css" />
+    <!-- jquery-->
+    <script src="../static/jquery-ui-1.12.1/external/jquery/jquery.js"></script>
+    <script>
+        $(function(){
+            // alert(1);
+        });
+    </script>
+</head>
+<body>
+    <div id="cur">
+        {{ html | safe }}
+    </div>
+    <hr>raw<hr>
+    <div id="raw">
+        {{ raw | safe}}
+    </div>
+</body>
+</html>
