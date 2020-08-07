@@ -48,7 +48,7 @@ for cur_entry in entry_dict.keys():
             del cur_element_index, cur_element
         del cur_liju
     entry_dict[cur_entry]['html'] = str(
-        etree.tostring(cur_tree[0][0], encoding='utf-8'), encoding="utf-8"
+        etree.tostring(cur_tree[0][0], encoding='utf-8', method="html"), encoding="utf-8"
     )
     del cur_entry, cur_html, cur_tree, liju_list
 

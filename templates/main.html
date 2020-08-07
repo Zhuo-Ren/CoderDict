@@ -10,7 +10,18 @@
     <script src="../static/jquery-ui-1.12.1/external/jquery/jquery.js"></script>
     <script>
         $(function(){
-            // alert(1);
+            $("shcut-blk").css("display", "none")
+
+            $("def").nextAll().css("display", "none")
+
+            $("def").click(function(){
+                if ($(this).next().css("display") == "none"){
+                    $(this).nextAll().css("display", "block")
+                }
+                else{
+                    $(this).nextAll().css("display", "none")
+                }
+            })
         });
     </script>
 </head>
