@@ -22,10 +22,44 @@
                     $(this).nextAll().css("display", "none")
                 }
             })
+
+            $("#editHtmlButton").click(function(){
+                if ($("#editHtmlForm").css("display") == "block"){
+                    $("#editHtmlForm").css("display", "none")
+                }else{
+                    $("#editHtmlForm").css("display", "block")
+                }
+            })
+
+            $("#editHtmlSubmit").click(function(){
+                if ($("#editHtmlForm").css("display") == "block"){
+                    $("#editHtmlForm").css("display", "none")
+                }else{
+                    $("#editHtmlForm").css("display", "block")
+                }
+                $.post(
+                    "/edithtml",
+                    {
+                        entry: $("#entry").attr("value"),
+                        raw: $("#editHtmlContent").val()
+                    },
+                    function (data, status) {
+                        location.reload()
+                    }
+        );
+            })
         });
     </script>
 </head>
 <body>
+    <input id="entry" type="text" name="entry" value={{entry}} style="display: none">
+
+    <button id="editHtmlButton">修改</button>
+    <div id="editHtmlForm" style="display: none">
+        <textarea id="editHtmlContent" rows="3" cols="20"> {{raw}}</textarea>
+        <button id="editHtmlSubmit">保存</button>
+    </div>
+
     <div id="cur">
         {{ html | safe }}
     </div>
