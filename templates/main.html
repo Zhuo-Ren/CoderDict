@@ -46,7 +46,20 @@
                     function (data, status) {
                         location.reload()
                     }
-        );
+                );
+            })
+
+            $("#testButton").click(function () {
+                $.post(
+                    "/recordtest",
+                    {
+                        entry: $("#entry").attr("value"),
+                        score: $("#testScore").val(),
+                    },
+                    function (data, status) {
+
+                    }
+                );
             })
         });
     </script>
@@ -57,8 +70,11 @@
     <button id="editHtmlButton">修改</button>
     <div id="editHtmlForm" style="display: none">
         <textarea id="editHtmlContent" rows="3" cols="20"> {{raw}}</textarea>
-        <button id="editHtmlSubmit">保存</button>
+        <button id="editHtmlSubmit">提交修改结果</button>
     </div>
+
+    <input id="testScore" type="text" value="50">
+    <button id="testButton">提交测试结果</button>
 
     <div id="cur">
         {{ html | safe }}

@@ -8,7 +8,6 @@
   entry_dict={
       spelling of the entry: {
           'html_raw': 词条对应的原始html,  # 只读
-          'html': 修改后的html，现在是“”，
       },
       ...
   }
@@ -25,6 +24,7 @@ html_file.close()
 
 # center data structure
 entry_dict = {}
+cross_dict = {}
 """
 entry_dict用于存放词项数据。entry_dict的key是词项，value是这个词项对应的词项块组成的list。
 大多数词项对应一个词项块，但是有个别的对应多个词项块。
@@ -45,7 +45,7 @@ for cur_htmlblock in block_list:
     spelling = match.group()[:-1]
     htmlblock = cur_htmlblock[match.regs[0][1]:]
     if spelling not in entry_dict:
-        entry_dict[spelling] = {'html_raw': [], 'html': ""}
+        entry_dict[spelling] = {'html_raw': []}
     else:
         print(spelling, "对应多个html块")
     entry_dict[spelling]['html_raw'].append(htmlblock)
@@ -81,6 +81,8 @@ del html, cur_entry, cur_htmlblock_index, cur_htmlblock
 # output to pkl file
 with open('./pkl/1.从html中提取原始词条.entry.pkl', 'wb') as pkl_file:
     cPickle.dump(entry_dict, pkl_file)
+with open('./pkl/1.从html中提取原始词条.cross.pkl', 'wb') as pkl_file:
+    cPickle.dump(cross_dict, pkl_file)
 
 # # output to sqlite
 # try:
@@ -91,7 +93,6 @@ with open('./pkl/1.从html中提取原始词条.entry.pkl', 'wb') as pkl_file:
 #         tableStructureInDict={
 #             'entry': {'类型': '文本', '主键否': '主键'},
 #             'html_raw': {'类型': '文本', '主键否': '非主键'},
-#             'html': {'类型': '文本', '主键否': '非主键'}
 #         },
 #         updateStrategy='rewrite'
 #     )
@@ -100,7 +101,6 @@ with open('./pkl/1.从html中提取原始词条.entry.pkl', 'wb') as pkl_file:
 #                         {
 #                             'entry': cur_entry,
 #                             'html_raw': entry_dict[cur_entry]['html_raw'],
-#                             'html': entry_dict[cur_entry]['html']
 #                         }
 #                        )
 # finally:
