@@ -12,11 +12,11 @@
       },
       ...
   }
-4.构建【cross_dict】用于存放跨词项的数据。暂时是个空字典。
-5.entry_dict和cross_dict持久化到pkl文件。
+5.entry_dict持久化到pkl文件和sqlite数据库。
 """
 import _pickle as cPickle
 import re
+from dbsql_sqlite import DbSql
 
 # read the html file
 html_file = open("raw/原版debug.html", "r", encoding="UTF-8")
@@ -28,10 +28,6 @@ entry_dict = {}
 """
 entry_dict用于存放词项数据。entry_dict的key是词项，value是这个词项对应的词项块组成的list。
 大多数词项对应一个词项块，但是有个别的对应多个词项块。
-"""
-cross_dict = {}
-"""
-cross_dict用于存放跨词项的数据。暂时是个空字典。
 """
 
 # split the file based on label </>, get block_list.
@@ -85,6 +81,29 @@ del html, cur_entry, cur_htmlblock_index, cur_htmlblock
 # output to pkl file
 with open('./pkl/1.从html中提取原始词条.entry.pkl', 'wb') as pkl_file:
     cPickle.dump(entry_dict, pkl_file)
-with open('./pkl/1.从html中提取原始词条.cross.pkl', 'wb') as pkl_file:
-    cPickle.dump(cross_dict, pkl_file)
+
+# # output to sqlite
+# try:
+#     DbSql.connectDataBase('../dbsql_sqlite_test.sqlite')
+#
+#     DbSql.ensureTable(
+#         tableName='entry_dict',
+#         tableStructureInDict={
+#             'entry': {'类型': '文本', '主键否': '主键'},
+#             'html_raw': {'类型': '文本', '主键否': '非主键'},
+#             'html': {'类型': '文本', '主键否': '非主键'}
+#         },
+#         updateStrategy='rewrite'
+#     )
+#     for cur_entry in entry_dict.keys():
+#         DbSql.insertRow('entry_dict',
+#                         {
+#                             'entry': cur_entry,
+#                             'html_raw': entry_dict[cur_entry]['html_raw'],
+#                             'html': entry_dict[cur_entry]['html']
+#                         }
+#                        )
+# finally:
+#     DbSql.disconnectDataBase()
+
 
