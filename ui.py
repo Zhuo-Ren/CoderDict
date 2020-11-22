@@ -10,15 +10,16 @@ def ui(
         cross_dict_path: str = "./pkl/cross.pkl",
         memorize_dict_path: str = "./pkl/memorize.pkl"
        ) -> None:
-    """查看字典内容。
+    """打开软件GUI。
 
     This function read the given pkl file (`pkl/1.从html中提取原始词条.entry.pkl` and
     `pkl/1.从html中提取原始词条.cross.pkl` by default), and open web page。Edit url to search
     target word. The web page will show `entry_dict[指定词项][html]` and
     `entry_dict[指定词项][html_raw]`.
 
-    :param entry_dict_path:
-    :param cross_dict_path:
+    :param entry_dict_path: A dict, each item of which represent a entry.
+    :param cross_dict_path: A dict saves some info that related to more than one item.
+    :param memorize_dict_path: A dict saves user learning progress.
     """
     # read the pkl file
     with open(entry_dict_path, 'rb') as pkl_file:
@@ -46,8 +47,17 @@ def ui(
                                memoObjList=memo_obj_list,
                                showType="view")
 
-    @app.route('/learn/', methods=["GET"])
-    def init():
+    @app.route('/review/', methods=["GET"])
+    def review():
+        """
+        In the 'review' page, user can review entries. This function update the
+        memorize_dict and calc a entry list that should be reviewed. A small group of
+        entries, which are to be reviewed in current round, are selected from this list
+        in random way. This group of entry are returned to frontend.
+
+        :return: A rendered 'review' page, with a info dict about the entry to be
+        reviewed in current round.
+        """
         entry = request.args.get("q")
         html = entry_dict[entry]['html']
         raw = entry_dict[entry]['html_raw']
@@ -63,18 +73,29 @@ def ui(
 
     @app.route('/edithtml', methods=["POST"])
     def edit_html():
+        """
+        In 'view' page, user can edit entry by edit the html. This function deal with
+        the "entry html changing" require by save the changed entry into pkl file.
+
+        :return:
+        """
         # save the new html_raw
         entry = request.form.get("entry")
         entry_dict[entry]['html_raw'] = request.form.get("raw")
         entry_dict[entry]['html'] = raw_to_html(entry, entry_dict[entry]['html_raw'])
-            # save into pkl file
+        # save into pkl file
         with open(entry_dict_path, 'wb') as pkl_file:
             cPickle.dump(entry_dict, pkl_file)
         # update the website
         return jsonify(True)
 
-    @app.route('/recordtest', methods=["POST"])
-    def record_test():
+    @app.route('/reviewscore', methods=["POST"])
+    def reviewscore():
+        """
+        In 'review' page, after user reviewed a entry, user scores his learning progress.
+        This function deal with the 'earning progress scoring' operation.
+        :return:
+        """
         now = datetime.datetime.now()
         entry = request.form.get("entry")
         score = request.form.get("score")
