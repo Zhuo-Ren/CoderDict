@@ -1,3 +1,7 @@
+li{
+    padding-left: 20px;
+}
+
 @font-face {
     font-family: 'Optima';
     src: url('Optima_LT_Medium.eot?#iefix') format('embedded-opentype'), url('/font/Optima_LT_Medium.ttf'), url('/font/Optima LT Medium.ttf'), url('Optima_LT_Medium.ttf'), url('Optima LT Medium.ttf');

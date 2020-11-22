@@ -7,7 +7,9 @@ import datetime3 as datetime
 
 def ui(
         entry_dict_path: str = "./pkl/entry.pkl",
-        cross_dict_path: str = "./pkl/cross.pkl") -> None:
+        cross_dict_path: str = "./pkl/cross.pkl",
+        memorize_dict_path: str = "./pkl/memorize.pkl"
+       ) -> None:
     """查看字典内容。
 
     This function read the given pkl file (`pkl/1.从html中提取原始词条.entry.pkl` and
@@ -23,18 +25,41 @@ def ui(
         entry_dict = cPickle.load(pkl_file)
     with open(cross_dict_path, 'rb') as pkl_file:
         cross_dict = cPickle.load(pkl_file)
+    with open(memorize_dict_path, 'rb') as pkl_file:
+        memorize_dict = cPickle.load(pkl_file)
 
     app = Flask(__name__)
 
     @app.route('/view/', methods=["GET"])
+    def view():
+        entry = request.args.get("q")
+        html = entry_dict[entry]['html']
+        raw = entry_dict[entry]['html_raw']
+        if entry in memorize_dict:
+            memo_obj_list = memorize_dict[entry]
+        else:
+            memo_obj_list = []
+        return render_template("main.html",
+                               entry=entry,
+                               raw=html,
+                               html=html,
+                               memoObjList=memo_obj_list,
+                               showType="view")
+
+    @app.route('/learn/', methods=["GET"])
     def init():
         entry = request.args.get("q")
         html = entry_dict[entry]['html']
         raw = entry_dict[entry]['html_raw']
+        if entry in memorize_dict:
+            memo_obj_list = memorize_dict[entry]
+        else:
+            memo_obj_list = []
         return render_template("main.html",
                                entry=entry,
                                raw=html,
-                               html=html)
+                               html=html,
+                               memoObjList=memo_obj_list)
 
     @app.route('/edithtml', methods=["POST"])
     def edit_html():
@@ -42,7 +67,7 @@ def ui(
         entry = request.form.get("entry")
         entry_dict[entry]['html_raw'] = request.form.get("raw")
         entry_dict[entry]['html'] = raw_to_html(entry, entry_dict[entry]['html_raw'])
-        # save into pkl file
+            # save into pkl file
         with open(entry_dict_path, 'wb') as pkl_file:
             cPickle.dump(entry_dict, pkl_file)
         # update the website
