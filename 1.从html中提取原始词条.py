@@ -1,5 +1,5 @@
 """
-本程序 ：
+本程序：
 1.读取“原版debug.html”文件，并以</>为记号分割文件，得到block。
 2.从block中分离出词项的spelling和htmlblock。
 3.删除htmlblock中的<head>。
